@@ -179,3 +179,61 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Dataset files - Users should download these themselves
+# 数据集文件 - 用户需要自行下载
+data/raw/
+data/processed/
+!data/processed/test_sample.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# API keys and secrets
+secrets/
+.env.local
+.env.production
+
+# Test result logs
+logs/
+test_*.db
+
+# Project-specific artifacts
+*-report.json
+*-results.json
+bandit-report.json
+safety-report.json
+benchmark-results.json
+test-report.json
+integration_test_report.txt
+performance-results.json
+performance-report.html
+test_audit_logs/
+
+# IDE and editors
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Temporary and backup files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+.cache/

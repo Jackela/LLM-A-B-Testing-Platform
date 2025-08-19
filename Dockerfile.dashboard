@@ -1,0 +1,80 @@
+# Streamlit Dashboard Dockerfile
+FROM python:3.11-slim as base
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash app
+
+# Set work directory
+WORKDIR /app
+
+# Install Poetry
+RUN pip install poetry==1.7.1
+
+# Copy poetry files
+COPY pyproject.toml poetry.lock ./
+
+# Configure poetry
+RUN poetry config virtualenvs.create false
+
+# Production stage
+FROM base as production
+
+# Install dependencies (only main, streamlit is included)
+RUN poetry install --only=main --no-dev
+
+# Copy application code
+COPY --chown=app:app ./src ./src
+COPY --chown=app:app ./configs ./configs
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/.streamlit && chown -R app:app /app
+
+# Create Streamlit config
+RUN echo '[server]\nport = 8501\naddress = "0.0.0.0"\nheadless = true\nenableCORS = false\nenableXsrfProtection = false\n[theme]\nbase = "light"\n' > /app/.streamlit/config.toml
+
+# Switch to non-root user
+USER app
+
+# Expose port
+EXPOSE 8501
+
+# Health check for Streamlit
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+
+# Default command
+CMD ["streamlit", "run", "src/presentation/dashboard/main.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+# Development stage
+FROM base as development
+
+# Install all dependencies
+RUN poetry install
+
+# Copy application code
+COPY --chown=app:app . .
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/.streamlit && chown -R app:app /app
+
+# Create Streamlit config for development
+RUN echo '[server]\nport = 8501\naddress = "0.0.0.0"\nheadless = true\nenableCORS = false\nenableXsrfProtection = false\nrunOnSave = true\n[theme]\nbase = "light"\n' > /app/.streamlit/config.toml
+
+# Switch to non-root user
+USER app
+
+# Default command for development
+CMD ["streamlit", "run", "src/presentation/dashboard/main.py", "--server.port=8501", "--server.address=0.0.0.0"]

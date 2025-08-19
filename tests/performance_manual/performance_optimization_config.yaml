@@ -1,0 +1,349 @@
+# Performance Testing Infrastructure Optimization Configuration
+# LLM A/B测试平台性能优化配置文件
+
+# 全局性能设置
+global_settings:
+  version: "2.0"
+  environment: "performance_testing"
+  description: "LLM A/B Testing Platform Performance Optimization Configuration"
+  
+  # 基础性能参数
+  performance_targets:
+    api_response_time_p95_ms: 2000
+    throughput_requests_per_second: 500
+    success_rate_minimum: 0.95
+    error_rate_maximum: 0.05
+    memory_usage_limit_percent: 85
+    cpu_usage_limit_percent: 80
+    
+  # 测试执行设置
+  execution_settings:
+    max_concurrent_tests: 50
+    test_timeout_seconds: 300
+    retry_attempts: 3
+    batch_size_optimal: 10
+    ramp_up_duration_seconds: 30
+    cooldown_duration_seconds: 10
+
+# 数据管理优化
+data_management:
+  cache_optimization:
+    memory_cache_size_mb: 500
+    disk_cache_size_gb: 2
+    cache_ttl_hours: 24
+    enable_compression: true
+    compression_algorithm: "gzip"
+    eviction_policy: "lru"
+    
+  dataset_loading:
+    async_loading: true
+    parallel_file_reads: true
+    max_file_read_workers: 4
+    prefetch_datasets:
+      - name: "arc_easy"
+        max_samples: 2000
+        priority: "high"
+      - name: "gsm8k" 
+        max_samples: 1500
+        priority: "medium"
+    
+  data_preprocessing:
+    enable_preprocessing: true
+    normalize_text: true
+    remove_duplicates: true
+    validate_format: true
+
+# 负载测试配置
+load_testing:
+  scenarios:
+    light_load:
+      concurrent_users: 10
+      duration_minutes: 5
+      ramp_up_seconds: 30
+      think_time_ms: 1000
+      
+    medium_load:
+      concurrent_users: 50
+      duration_minutes: 10
+      ramp_up_seconds: 60
+      think_time_ms: 500
+      
+    heavy_load:
+      concurrent_users: 100
+      duration_minutes: 20
+      ramp_up_seconds: 120
+      think_time_ms: 200
+      
+    stress_test:
+      concurrent_users: 200
+      duration_minutes: 30
+      ramp_up_seconds: 180
+      think_time_ms: 0
+      
+  connection_optimization:
+    http_pool_size: 100
+    keep_alive_timeout: 30
+    connection_timeout: 10
+    read_timeout: 30
+    max_retries: 3
+    backoff_factor: 0.5
+
+# 性能监控设置
+monitoring:
+  real_time_monitoring:
+    enabled: true
+    collection_interval_seconds: 1.0
+    metrics_retention_hours: 24
+    
+  metrics_collection:
+    system_metrics:
+      - cpu_usage_percent
+      - memory_usage_percent
+      - disk_io_mbps
+      - network_io_mbps
+      - process_memory_mb
+      
+    application_metrics:
+      - response_time_ms
+      - request_rate_per_second
+      - error_rate_percent
+      - cache_hit_rate
+      - database_query_time_ms
+      
+    llm_specific_metrics:
+      - tokens_per_request
+      - cost_per_request_usd
+      - model_inference_time_ms
+      - provider_latency_ms
+      - judge_evaluation_time_ms
+      
+  alerting:
+    thresholds:
+      critical:
+        response_time_p95_ms: 5000
+        error_rate_percent: 10.0
+        cpu_usage_percent: 95.0
+        memory_usage_percent: 95.0
+        
+      warning:
+        response_time_p95_ms: 2000
+        error_rate_percent: 5.0
+        cpu_usage_percent: 80.0
+        memory_usage_percent: 85.0
+        
+    notification_channels:
+      - type: "log"
+        level: "warning"
+      - type: "console"
+        level: "critical"
+
+# 资源优化
+resource_optimization:
+  memory_management:
+    heap_size_mb: 2048
+    garbage_collection_tuning: true
+    memory_pool_size: 100
+    object_pooling_enabled: true
+    
+  cpu_optimization:
+    worker_threads: "auto"  # 自动检测CPU核心数
+    enable_threading: true
+    async_processing: true
+    batch_processing_size: 10
+    
+  network_optimization:
+    enable_compression: true
+    use_http2: true
+    connection_pooling: true
+    dns_caching: true
+    
+  database_optimization:
+    connection_pool_size: 20
+    max_overflow: 30
+    pool_timeout_seconds: 10
+    query_timeout_seconds: 30
+    enable_query_cache: true
+    cache_size_queries: 1000
+
+# 测试特定优化
+test_optimization:
+  llm_provider_optimization:
+    api_rate_limiting:
+      openai:
+        requests_per_minute: 3000
+        tokens_per_minute: 150000
+      anthropic:
+        requests_per_minute: 2000
+        tokens_per_minute: 100000
+      google:
+        requests_per_minute: 5000
+        tokens_per_minute: 200000
+        
+    timeout_settings:
+      api_call_timeout_seconds: 30
+      inference_timeout_seconds: 60
+      judge_timeout_seconds: 45
+      
+    retry_strategies:
+      max_retries: 3
+      backoff_multiplier: 2.0
+      max_backoff_seconds: 60
+      retryable_errors:
+        - "timeout"
+        - "rate_limit"
+        - "server_error"
+        
+  cost_optimization:
+    budget_controls:
+      max_cost_per_test_usd: 10.0
+      cost_tracking_enabled: true
+      cost_alerting_threshold_usd: 5.0
+      
+    model_selection:
+      prefer_cheaper_models: true
+      cost_performance_ratio_threshold: 0.001
+      
+  batch_processing:
+    optimal_batch_sizes:
+      evaluation_requests: 10
+      data_loading: 50
+      result_processing: 20
+      
+    parallel_processing:
+      max_parallel_evaluations: 25
+      max_parallel_providers: 5
+      max_parallel_judges: 3
+
+# 环境设置
+environment:
+  development:
+    debug_mode: true
+    verbose_logging: true
+    performance_profiling: true
+    enable_test_data_mocking: true
+    
+  testing:
+    debug_mode: false
+    verbose_logging: false
+    performance_profiling: true
+    enable_test_data_mocking: false
+    
+  production:
+    debug_mode: false
+    verbose_logging: false
+    performance_profiling: false
+    enable_test_data_mocking: false
+
+# 性能基准设置
+benchmarks:
+  baseline_tests:
+    - name: "api_response_baseline"
+      endpoint: "/api/v1/tests"
+      method: "GET"
+      expected_p95_ms: 500
+      
+    - name: "test_creation_baseline" 
+      endpoint: "/api/v1/tests"
+      method: "POST"
+      expected_p95_ms: 2000
+      
+    - name: "evaluation_baseline"
+      endpoint: "/api/v1/evaluations"
+      method: "POST"
+      expected_p95_ms: 5000
+      
+  regression_detection:
+    enabled: true
+    threshold_percent_change: 20.0
+    comparison_window_hours: 24
+    
+  performance_tracking:
+    track_trends: true
+    trend_analysis_days: 7
+    generate_reports: true
+    report_frequency: "daily"
+
+# 优化策略
+optimization_strategies:
+  caching_strategy:
+    levels:
+      - level: "application"
+        type: "in_memory"
+        size_mb: 256
+        ttl_minutes: 30
+        
+      - level: "database"
+        type: "query_cache"
+        size_mb: 128
+        ttl_minutes: 60
+        
+      - level: "external_api"
+        type: "response_cache"
+        size_mb: 512
+        ttl_minutes: 10
+        
+  load_balancing:
+    strategy: "round_robin"
+    health_check_interval_seconds: 30
+    failure_threshold: 3
+    recovery_threshold: 2
+    
+  auto_scaling:
+    enabled: true
+    scale_up_threshold_cpu: 70.0
+    scale_down_threshold_cpu: 30.0
+    scale_up_threshold_memory: 80.0
+    scale_down_threshold_memory: 40.0
+    cooldown_minutes: 5
+
+# 报告和分析
+reporting:
+  performance_reports:
+    enabled: true
+    frequency: "after_each_test"
+    formats: ["json", "html"]
+    include_charts: true
+    
+  metrics_export:
+    prometheus_enabled: false
+    grafana_dashboard: false
+    csv_export: true
+    json_export: true
+    
+  analysis:
+    trend_analysis: true
+    regression_detection: true
+    performance_recommendations: true
+    cost_analysis: true
+    
+  storage:
+    results_retention_days: 30
+    compress_old_results: true
+    archive_threshold_days: 7
+
+# 安全和可靠性
+reliability:
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 5
+    timeout_seconds: 60
+    half_open_max_calls: 3
+    
+  health_checks:
+    enabled: true
+    interval_seconds: 30
+    timeout_seconds: 10
+    endpoints:
+      - "/health"
+      - "/api/v1/health"
+      
+  backup_and_recovery:
+    backup_test_results: true
+    backup_frequency: "hourly"
+    recovery_point_objective_minutes: 15
+    
+  error_handling:
+    graceful_degradation: true
+    fallback_responses: true
+    error_aggregation: true
+    error_rate_limiting: true
