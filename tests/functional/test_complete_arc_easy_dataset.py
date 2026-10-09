@@ -342,9 +342,7 @@ class CompleteARCEasyTest:
 
                 logger.info(f"批次 {batch_idx + 1} 完成")
                 logger.info(f"  总进度: {completed_tests}/{total_samples} ({progress:.1f}%)")
-                logger.info(
-                    f"  当前成本: ${total_cost:.6f} ({total_cost/budget_limit*100:.1f}%预算)"
-                )
+                logger.info(f"  当前成本: ${total_cost:.6f} ({total_cost/budget_limit*100:.1f}%预算)")
                 logger.info(f"  已用时: {elapsed_time/60:.1f}分钟")
                 logger.info(f"  预计剩余: {remaining_time/60:.1f}分钟")
 

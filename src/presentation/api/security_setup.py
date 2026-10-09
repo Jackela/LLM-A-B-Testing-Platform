@@ -188,7 +188,9 @@ class SecurityMiddleware:
         level = (
             AuditLevel.CRITICAL
             if risk_score > 0.8
-            else AuditLevel.ERROR if risk_score > 0.5 else AuditLevel.WARNING
+            else AuditLevel.ERROR
+            if risk_score > 0.5
+            else AuditLevel.WARNING
         )
 
         await self.audit_logger.log_event(

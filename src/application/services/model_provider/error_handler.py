@@ -13,7 +13,7 @@ class ProviderErrorType(Enum):
     AUTHENTICATION_ERROR = "authentication_error"
     RATE_LIMIT_EXCEEDED = "rate_limit_exceeded"
     MODEL_NOT_FOUND = "model_not_found"
-    TOKEN_LIMIT_EXCEEDED = "token_limit_exceeded"
+    TOKEN_LIMIT_EXCEEDED = "token_limit_exceeded"  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
     PROVIDER_OVERLOADED = "provider_overloaded"
     NETWORK_ERROR = "network_error"
     TIMEOUT_ERROR = "timeout_error"
@@ -499,6 +499,8 @@ class ErrorHandler:
         import random
 
         exponential_delay = base_delay * (2 ** (attempt - 1))
-        jitter = random.uniform(0.8, 1.2)  # ±20% jitter
+        jitter = random.uniform(
+            0.8, 1.2
+        )  # ±20% jitter  # nosec B311 # Retry scheduling jitter; never used for credentials or cryptography.
 
         return min(exponential_delay * jitter, 300.0)  # Cap at 5 minutes

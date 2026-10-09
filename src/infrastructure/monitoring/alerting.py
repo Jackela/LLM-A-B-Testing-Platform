@@ -606,7 +606,7 @@ class AlertManager:
         import hashlib
 
         fingerprint_data = f"{rule_name}:{json.dumps(labels, sort_keys=True)}"
-        return hashlib.md5(fingerprint_data.encode()).hexdigest()
+        return hashlib.md5(fingerprint_data.encode(), usedforsecurity=False).hexdigest()
 
     async def resolve_alert(self, alert_id: str):
         """Resolve an active alert."""

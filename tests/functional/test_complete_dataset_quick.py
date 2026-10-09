@@ -52,17 +52,13 @@ async def main():
         logger.info(
             f"🏆 胜率: A={results['win_rate_a']:.1%} | B={results['win_rate_b']:.1%} | 平局={results['tie_rate']:.1%}"
         )
-        logger.info(
-            f"💰 总成本: ${cost['total_cost']} (预算使用: {cost['budget_used_percentage']}%)"
-        )
+        logger.info(f"💰 总成本: ${cost['total_cost']} (预算使用: {cost['budget_used_percentage']}%)")
         logger.info(f"⚡ 吞吐量: {summary['performance_metrics']['throughput']:.1f} 样本/秒")
 
         # 置信度分析
         if "confidence_analysis" in summary:
             conf = summary["confidence_analysis"]
-            logger.info(
-                f"🎯 平均置信度: {conf['mean']:.3f} (高置信度比例: {conf['high_confidence_rate']:.1%})"
-            )
+            logger.info(f"🎯 平均置信度: {conf['mean']:.3f} (高置信度比例: {conf['high_confidence_rate']:.1%})")
 
         logger.info("=" * 60)
 

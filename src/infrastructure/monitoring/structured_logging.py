@@ -361,7 +361,9 @@ class StructuredLogger:
         level = (
             LogLevel.WARNING
             if severity == "low"
-            else LogLevel.ERROR if severity == "high" else LogLevel.WARNING
+            else LogLevel.ERROR
+            if severity == "high"
+            else LogLevel.WARNING
         )
 
         log_method = getattr(self, level.value.lower())

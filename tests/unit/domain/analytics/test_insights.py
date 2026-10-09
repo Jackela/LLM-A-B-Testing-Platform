@@ -132,7 +132,9 @@ class TestInsightGenerator:
         effect_magnitude = (
             EffectMagnitude.LARGE
             if abs(effect_size) >= 0.8
-            else EffectMagnitude.MEDIUM if abs(effect_size) >= 0.5 else EffectMagnitude.SMALL
+            else EffectMagnitude.MEDIUM
+            if abs(effect_size) >= 0.5
+            else EffectMagnitude.SMALL
         )
 
         interpretation = TestInterpretation(

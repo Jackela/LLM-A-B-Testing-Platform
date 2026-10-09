@@ -60,7 +60,7 @@ async def login(request: LoginRequest):
     return TokenResponse(
         access_token=access_token,
         refresh_token=refresh_token,
-        token_type="bearer",
+        token_type="bearer",  # nosec B106 # OAuth response scheme; not an authentication secret.
         expires_in=1800,  # 30 minutes
     )
 
@@ -79,7 +79,7 @@ async def refresh_token(request: RefreshTokenRequest):
     return TokenResponse(
         access_token=new_access_token,
         refresh_token=request.refresh_token,  # Keep same refresh token
-        token_type="bearer",
+        token_type="bearer",  # nosec B106 # OAuth response scheme; not an authentication secret.
         expires_in=1800,
     )
 

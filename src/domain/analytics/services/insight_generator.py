@@ -630,7 +630,6 @@ class InsightGenerator:
 
         for dimension, comparison in model_comparison.dimension_comparisons.items():
             if abs(comparison["score_difference"]) > 0.3:  # Significant dimension difference
-
                 advantage_model = (
                     model_comparison.model_a.model_name
                     if comparison["advantage"] == "self"

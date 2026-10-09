@@ -40,17 +40,20 @@ class DocumentationExamples:
                 APIExample(
                     summary="User Login",
                     description="Standard user authentication with email and password",
-                    value={"username": "user@company.com", "password": "SecurePassword123!"},
+                    value={
+                        "username": "user@company.com",
+                        "password": "SecurePassword123!",
+                    },  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
                     category=ExampleCategory.AUTHENTICATION,
                 ),
                 APIExample(
                     summary="Successful Login Response",
                     description="Response after successful authentication",
                     value={
-                        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGNvbXBhbnkuY29tIiwiZXhwIjoxNjQwOTk1MjAwLCJyb2xlIjoiVVNFUiJ9.signature",
-                        "token_type": "bearer",
+                        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGNvbXBhbnkuY29tIiwiZXhwIjoxNjQwOTk1MjAwLCJyb2xlIjoiVVNFUiJ9.signature",  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
+                        "token_type": "bearer",  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
                         "expires_in": 86400,
-                        "refresh_token": "refresh_token_here",
+                        "refresh_token": "refresh_token_here",  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
                         "user": {
                             "id": "user-12345",
                             "username": "user@company.com",
@@ -65,7 +68,10 @@ class DocumentationExamples:
                 APIExample(
                     summary="Admin Login",
                     description="Administrator login with elevated privileges",
-                    value={"username": "admin@company.com", "password": "AdminSecurePass456!"},
+                    value={
+                        "username": "admin@company.com",
+                        "password": "AdminSecurePass456!",
+                    },  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
                     category=ExampleCategory.AUTHENTICATION,
                 ),
                 APIExample(

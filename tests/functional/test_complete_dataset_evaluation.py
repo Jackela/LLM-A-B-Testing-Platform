@@ -368,9 +368,7 @@ This result is obtained through careful mathematical analysis."""
         char_count = len(text)
 
         # 基于字符数和单词数的混合计算
-        token_estimate = max(
-            int(word_count * 1.3), int(char_count * 0.25)  # 英文基础估算  # 字符密集内容
-        )
+        token_estimate = max(int(word_count * 1.3), int(char_count * 0.25))  # 英文基础估算  # 字符密集内容
 
         return max(1, token_estimate)
 
@@ -687,12 +685,8 @@ class CompleteDatasetTestRunner:
         logger.info(f"\n📚 已加载 {actual_samples} 个测试样本")
 
         # 显示提供商信息
-        logger.info(
-            f"🤖 Provider A: {self.provider_a.provider_name} ({self.provider_a.model_name})"
-        )
-        logger.info(
-            f"🤖 Provider B: {self.provider_b.provider_name} ({self.provider_b.model_name})"
-        )
+        logger.info(f"🤖 Provider A: {self.provider_a.provider_name} ({self.provider_a.model_name})")
+        logger.info(f"🤖 Provider B: {self.provider_b.provider_name} ({self.provider_b.model_name})")
         logger.info(
             f"⚖️ Judge: {self.judge.judge_provider.provider_name} ({self.judge.judge_provider.model_name})"
         )
@@ -805,15 +799,11 @@ class CompleteDatasetTestRunner:
             total = len(test_samples)
             progress = (processed / total) * 100
 
-            logger.info(
-                f"✅ 批次 {batch_idx + 1} 完成: {len(successful_results)}/{len(batch)} 成功"
-            )
+            logger.info(f"✅ 批次 {batch_idx + 1} 完成: {len(successful_results)}/{len(batch)} 成功")
             logger.info(
                 f"📈 总进度: {processed}/{total} ({progress:.1f}%) | 当前成本: ${self.current_cost:.4f}"
             )
-            logger.info(
-                f"⏱️ 批次耗时: {batch_time:.1f}秒 | 平均: {batch_time/len(batch):.2f}秒/样本"
-            )
+            logger.info(f"⏱️ 批次耗时: {batch_time:.1f}秒 | 平均: {batch_time/len(batch):.2f}秒/样本")
 
             # 短暂休息避免过载
             if batch_idx < total_batches - 1:
@@ -1179,9 +1169,7 @@ class CompleteDatasetTestRunner:
             f"✅ 完成样本: {test_info['completed_samples']:,} ({test_info['completion_rate']:.1%})"
         )
         logger.info(f"🎯 成功率: {test_info['success_rate']:.1%}")
-        logger.info(
-            f"⏱️ 总耗时: {test_info['total_time']:.1f}秒 ({test_info['total_time']/60:.1f}分钟)"
-        )
+        logger.info(f"⏱️ 总耗时: {test_info['total_time']:.1f}秒 ({test_info['total_time']/60:.1f}分钟)")
         logger.info(f"🚀 吞吐量: {performance['throughput']} 样本/秒")
 
         # 提供商对比

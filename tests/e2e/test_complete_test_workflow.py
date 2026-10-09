@@ -152,7 +152,6 @@ class TestCompleteTestWorkflow:
             len(completed_tests) < len(test_ids)
             and (datetime.utcnow() - start_time).total_seconds() < max_wait_time
         ):
-
             for test_id in test_ids:
                 if test_id not in completed_tests:
                     progress_response = await async_client.get(

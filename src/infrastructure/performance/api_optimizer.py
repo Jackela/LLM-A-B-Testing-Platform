@@ -465,9 +465,11 @@ class APIOptimizer:
             )
 
             if algorithm != CompressionType.NONE:
-                compressed_content, compression_time, compression_ratio = (
-                    self.compressor.compress_response(content, algorithm)
-                )
+                (
+                    compressed_content,
+                    compression_time,
+                    compression_ratio,
+                ) = self.compressor.compress_response(content, algorithm)
 
                 if compressed_content != content:  # Compression was applied
                     content = compressed_content

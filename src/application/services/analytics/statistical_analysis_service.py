@@ -427,9 +427,9 @@ class StatisticalAnalysisService:
                 }
 
             # Assess practical significance
-            effect_analysis["practical_significance"][test_name] = (
-                self._assess_practical_significance(test_result, analysis_config)
-            )
+            effect_analysis["practical_significance"][
+                test_name
+            ] = self._assess_practical_significance(test_result, analysis_config)
 
         return effect_analysis
 

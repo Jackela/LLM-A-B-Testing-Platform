@@ -1,6 +1,7 @@
 """Comprehensive performance testing framework for the LLM A/B Testing Platform."""
 
 import asyncio
+import logging
 import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -212,7 +213,6 @@ class PerformanceBenchmark:
                 max_connections=config.concurrent_users * 2,
             ),
         ) as client:
-
             # Ramp-up phase
             if ramp_up_duration > 0:
                 await self._ramp_up_phase(
@@ -463,8 +463,8 @@ class PerformanceBenchmark:
                     total_cache_ops = cache_metrics.get("hits", 0) + cache_metrics.get("misses", 0)
                     if total_cache_ops > 0:
                         cache_hit_rate = cache_metrics.get("hits", 0) / total_cache_ops
-            except Exception:
-                pass
+            except Exception as error:
+                logging.getLogger(__name__).warning("Cache metrics unavailable: %s", error)
 
         # Collect errors
         errors = []

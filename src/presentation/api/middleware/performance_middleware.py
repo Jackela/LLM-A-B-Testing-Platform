@@ -181,7 +181,9 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
                 # Hash authorization header for privacy
                 import hashlib
 
-                header_value = hashlib.md5(header_value.encode()).hexdigest()[:8]
+                header_value = hashlib.md5(
+                    header_value.encode(), usedforsecurity=False
+                ).hexdigest()[:8]
             header_parts.append(f"{header_name}:{header_value}")
 
         # Combine all parts

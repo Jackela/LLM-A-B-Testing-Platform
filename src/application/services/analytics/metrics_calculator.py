@@ -718,7 +718,6 @@ class MetricsCalculator:
 
             # Check individual metrics for recommendations
             for metric_type, metric in summary.individual_metrics.items():
-
                 if metric_type == MetricType.ACCURACY and float(metric.value) < 0.7:
                     recommendations.append(
                         "Consider improving model accuracy through better training data or hyperparameter tuning"
@@ -962,7 +961,9 @@ class MetricsCalculator:
         trend_direction = (
             "improving"
             if second_avg > first_avg
-            else "declining" if second_avg < first_avg else "stable"
+            else "declining"
+            if second_avg < first_avg
+            else "stable"
         )
 
         return {

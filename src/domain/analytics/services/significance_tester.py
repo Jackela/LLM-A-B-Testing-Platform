@@ -1,8 +1,10 @@
 """Significance testing service for A/B test analysis."""
 
-from decimal import Decimal
+from decimal import logging
 from typing import Any, Dict, List, Optional
 from uuid import UUID
+
+import Decimal
 
 from ...evaluation.entities.evaluation_result import EvaluationResult
 from ...model_provider.entities.model_response import ModelResponse
@@ -174,8 +176,7 @@ class SignificanceTester:
                     results[comparison_key] = statistical_test.run_test(data)
 
                 except Exception as e:
-                    # Log error and continue with other comparisons
-                    continue
+                    logging.getLogger(__name__).warning("Statistical comparison failed: %s", e)
 
         return results
 

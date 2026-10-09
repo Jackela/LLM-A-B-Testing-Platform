@@ -92,13 +92,15 @@ def create_refresh_token(data: Dict[str, Any]) -> str:
     return encoded_jwt
 
 
-def verify_token(token: str, token_type: str = "access") -> Optional[TokenData]:
+def verify_token(
+    token: str, token_type: str = "access"
+) -> Optional[TokenData]:  # nosec B107 # Token category label; not a credential.
     """Verify and decode JWT token - enhanced version."""
     try:
         # Map legacy string to enum
-        if token_type == "access":
+        if token_type == TokenType.ACCESS.value:
             token_enum = TokenType.ACCESS
-        elif token_type == "refresh":
+        elif token_type == TokenType.REFRESH.value:
             token_enum = TokenType.REFRESH
         else:
             token_enum = TokenType.ACCESS

@@ -237,3 +237,6 @@ Desktop.ini
 *.backup
 *.old
 .cache/
+# Generated audit input and isolated contract environment
+requirements-audit.txt
+.venv-offline/

@@ -433,12 +433,8 @@ class CostControlledTestRunner:
         actual_samples = len(test_samples)
 
         logger.info(f"📚 已加载 {actual_samples} 个测试样本")
-        logger.info(
-            f"🤖 Provider A: {self.provider_a.provider_name} ({self.provider_a.model_name})"
-        )
-        logger.info(
-            f"🤖 Provider B: {self.provider_b.provider_name} ({self.provider_b.model_name})"
-        )
+        logger.info(f"🤖 Provider A: {self.provider_a.provider_name} ({self.provider_a.model_name})")
+        logger.info(f"🤖 Provider B: {self.provider_b.provider_name} ({self.provider_b.model_name})")
         logger.info(
             f"⚖️ Judge: {self.judge.judge_provider.provider_name} ({self.judge.judge_provider.model_name})"
         )
@@ -819,9 +815,7 @@ class CostControlledTestRunner:
         if cost["total_cost"] > 0:
             cost_per_100 = cost["avg_cost_per_sample"] * 100
             cost_per_1000 = cost["avg_cost_per_sample"] * 1000
-            logger.info(
-                f"  📈 成本预估: 100样本约${cost_per_100:.3f} | 1000样本约${cost_per_1000:.2f}"
-            )
+            logger.info(f"  📈 成本预估: 100样本约${cost_per_100:.3f} | 1000样本约${cost_per_1000:.2f}")
 
 
 async def main():

@@ -3,7 +3,6 @@
 import asyncio
 import hashlib
 import json
-import pickle
 import time
 import weakref
 from contextlib import asynccontextmanager
@@ -45,7 +44,7 @@ class CacheConfig:
     # Performance settings
     compression_enabled: bool = True
     compression_threshold: int = 1024  # Compress items larger than 1KB
-    serialization_format: str = "pickle"  # pickle or json
+    serialization_format: str = "json"  # shared cache values use JSON only
 
     # Cache warming
     enable_cache_warming: bool = True
@@ -280,27 +279,18 @@ class CacheManager:
         return key
 
     def _serialize_value(self, value: Any) -> bytes:
-        """Serialize value for storage."""
-        if self.config.serialization_format == "json":
-            try:
-                return json.dumps(value).encode("utf-8")
-            except (TypeError, ValueError):
-                # Fallback to pickle for non-JSON serializable objects
-                return pickle.dumps(value)
-        else:
-            return pickle.dumps(value)
+        """Serialize shared-cache values without executable object formats."""
+        if self.config.serialization_format != "json":
+            raise ValueError("Only JSON shared-cache serialization is supported")
+        return json.dumps(value, allow_nan=False).encode("utf-8")
 
     def _deserialize_value(self, data: bytes) -> Any:
-        """Deserialize value from storage."""
-        try:
-            # Try pickle first (more reliable)
-            return pickle.loads(data)
-        except (pickle.PickleError, TypeError):
-            try:
-                # Fallback to JSON
-                return json.loads(data.decode("utf-8"))
-            except (json.JSONDecodeError, UnicodeDecodeError):
-                return data  # Return raw data if can't deserialize
+        """Reject legacy pickle or malformed data; callers treat these as misses."""
+
+        def reject_constant(value: str) -> None:
+            raise ValueError(f"Non-finite JSON value: {value}")
+
+        return json.loads(data.decode("utf-8"), parse_constant=reject_constant)
 
     def _compress_data(self, data: bytes) -> bytes:
         """Compress data if enabled and beneficial."""
@@ -560,7 +550,9 @@ def cached(
                 arg_str = "_".join(str(arg) for arg in args)
                 kwarg_str = "_".join(f"{k}={v}" for k, v in sorted(kwargs.items()))
                 key_parts = [func.__name__, arg_str, kwarg_str]
-                cache_key = hashlib.md5("_".join(key_parts).encode()).hexdigest()
+                cache_key = hashlib.md5(
+                    "_".join(key_parts).encode(), usedforsecurity=False
+                ).hexdigest()
 
             # Get cache manager from somewhere (dependency injection in real app)
             # For now, assume it's available globally

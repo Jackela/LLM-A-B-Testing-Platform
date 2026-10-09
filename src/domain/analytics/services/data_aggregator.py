@@ -1,5 +1,6 @@
 """Data aggregation service for analytics domain."""
 
+import logging
 import math
 import statistics
 from collections import defaultdict
@@ -329,8 +330,7 @@ class DataAggregator:
                 )
 
             except Exception as e:
-                # Skip group if aggregation fails
-                continue
+                logging.getLogger(__name__).warning("Aggregation group failed: %s", e)
 
         return aggregated_data
 

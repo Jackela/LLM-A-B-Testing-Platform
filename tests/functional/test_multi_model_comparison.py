@@ -983,9 +983,7 @@ class MultiModelTestRunner:
             perf = analysis["performance"]
 
             logger.info(f"  📱 {model_name}:")
-            logger.info(
-                f"    推理风格: {char['reasoning_style']} | 详细级别: {char['detail_level']}"
-            )
+            logger.info(f"    推理风格: {char['reasoning_style']} | 详细级别: {char['detail_level']}")
             logger.info(
                 f"    准确性偏差: {char['accuracy_bias']:.2f} | 响应长度倍数: {char['response_length_multiplier']:.1f}"
             )

@@ -22,7 +22,7 @@ class AuditEventType(str, Enum):
     LOGIN_SUCCESS = "login_success"
     LOGIN_FAILURE = "login_failure"
     LOGOUT = "logout"
-    PASSWORD_CHANGE = "password_change"
+    PASSWORD_CHANGE = "password_change"  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
     MFA_ENABLED = "mfa_enabled"
     MFA_DISABLED = "mfa_disabled"
 
@@ -263,7 +263,6 @@ class AuditLogger:
         if self.current_log_file != log_path or (
             log_path.exists() and log_path.stat().st_size > self.max_file_size
         ):
-
             # Create new file with timestamp if size exceeded
             if log_path.exists() and log_path.stat().st_size > self.max_file_size:
                 timestamp = datetime.utcnow().strftime("%H%M%S")
