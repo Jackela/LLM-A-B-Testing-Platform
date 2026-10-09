@@ -1,4 +1,4 @@
-"""Audit the canonical runtime lock; scanner failures never mean a clean report."""
+"""Repository scanner boundaries; tool failures never mean a clean report."""
 
 import json
 import subprocess  # nosec B404 # Fixed local scanner commands without a shell.
@@ -69,3 +69,25 @@ def audit_locked_runtime(project_root: str) -> list[dict[str, Any]]:
             timeout=300,
         )
     return parse_audit_result(result.stdout, result.returncode)
+
+
+def parse_bandit_result(stdout: str, returncode: int) -> dict[str, Any]:
+    if returncode not in (0, 1):
+        raise ValueError(f"Bandit failed with exit code {returncode}")
+    data = json.loads(stdout)
+    if not isinstance(data, dict) or data.get("errors") != []:
+        raise ValueError("Bandit did not complete its source scan")
+    results, metrics = data.get("results"), data.get("metrics")
+    if not isinstance(results, list) or not isinstance(metrics, dict):
+        raise ValueError("Malformed Bandit report")
+    totals = metrics.get("_totals", {})
+    if not isinstance(totals, dict) or not isinstance(totals.get("loc"), int) or totals["loc"] <= 0:
+        raise ValueError("Bandit did not scan any source lines")
+    for result in results:
+        if not isinstance(result, dict) or not isinstance(result.get("test_id"), str):
+            raise ValueError("Malformed Bandit issue")
+        if result.get("issue_severity") not in {"LOW", "MEDIUM", "HIGH"}:
+            raise ValueError("Malformed Bandit severity")
+    if bool(results) != (returncode == 1):
+        raise ValueError("Bandit exit status contradicts its issue report")
+    return data

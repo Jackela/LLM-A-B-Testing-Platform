@@ -5,10 +5,33 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from src.infrastructure.security.dependency_audit import audit_locked_runtime, parse_audit_result
+from src.infrastructure.security.scanner_runtime import (
+    audit_locked_runtime,
+    parse_audit_result,
+    parse_bandit_result,
+)
 
 
 class DependencyAudit(unittest.TestCase):
+    def test_bandit_clean_and_vulnerable_reports(self):
+        for issues, code in [([], 0), ([{"test_id": "B999", "issue_severity": "HIGH"}], 1)]:
+            report = {"results": issues, "errors": [], "metrics": {"_totals": {"loc": 1}}}
+            self.assertEqual(parse_bandit_result(json.dumps(report), code), report)
+
+    def test_bandit_errors_cannot_be_reported_as_a_clean_scan(self):
+        clean = {"results": [], "errors": [], "metrics": {"_totals": {"loc": 1}}}
+        cases = [
+            ("", 0),
+            (json.dumps(clean), 2),
+            (json.dumps(clean), 1),
+            (json.dumps({**clean, "errors": ["cannot parse source"]}), 0),
+            (json.dumps({**clean, "metrics": {}}), 0),
+            (json.dumps({**clean, "results": [{}]}), 1),
+        ]
+        for stdout, code in cases:
+            with self.subTest(stdout=stdout, code=code), self.assertRaises(ValueError):
+                parse_bandit_result(stdout, code)
+
     def report(self, vulnerabilities=None, **extra):
         return json.dumps(
             {
@@ -45,13 +68,13 @@ class DependencyAudit(unittest.TestCase):
 
     def test_missing_exporter_or_scanner_cannot_report_success(self):
         with patch(
-            "src.infrastructure.security.dependency_audit.subprocess.run",
+            "src.infrastructure.security.scanner_runtime.subprocess.run",
             side_effect=subprocess.CalledProcessError(1, ["export"]),
         ):
             with self.assertRaises(subprocess.CalledProcessError):
                 audit_locked_runtime(".")
         with patch(
-            "src.infrastructure.security.dependency_audit.subprocess.run",
+            "src.infrastructure.security.scanner_runtime.subprocess.run",
             side_effect=[
                 subprocess.CompletedProcess([], 0, "fixture==1\n", ""),
                 subprocess.CompletedProcess([], 2, "", "missing tool"),
@@ -72,5 +95,5 @@ class DependencyAudit(unittest.TestCase):
             self.assertNotIn("shell", kwargs)
             return subprocess.CompletedProcess(argv, 0, self.report(), "")
 
-        with patch("src.infrastructure.security.dependency_audit.subprocess.run", side_effect=tool):
+        with patch("src.infrastructure.security.scanner_runtime.subprocess.run", side_effect=tool):
             self.assertEqual(audit_locked_runtime("."), [])

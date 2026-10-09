@@ -17,8 +17,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import httpx
 
 from ..monitoring.structured_logging import get_logger
-from .dependency_audit import audit_locked_runtime
 from .middleware import InputValidator, SecurityMiddleware
+from .scanner_runtime import audit_locked_runtime, parse_bandit_result
 
 logger = get_logger(__name__)
 
@@ -207,27 +207,21 @@ class StaticAnalyzer:
             completed_at = datetime.utcnow()
             duration = (completed_at - started_at).total_seconds()
 
-            issues = []
-            if result.stdout:
-                try:
-                    bandit_data = json.loads(result.stdout)
-                    for result_item in bandit_data.get("results", []):
-                        issue = SecurityIssue(
-                            id=result_item.get("test_id", "unknown"),
-                            title=result_item.get("test_name", "Security issue"),
-                            description=result_item.get("issue_text", "No description"),
-                            severity=self._map_bandit_severity(
-                                result_item.get("issue_severity", "MEDIUM")
-                            ),
-                            category=result_item.get("test_name", "static_analysis"),
-                            file_path=result_item.get("filename"),
-                            line_number=result_item.get("line_number"),
-                            cwe_id=result_item.get("test_id"),  # Bandit uses test IDs
-                            remediation=result_item.get("more_info"),
-                        )
-                        issues.append(issue)
-                except json.JSONDecodeError as e:
-                    logger.error(f"Failed to parse Bandit output: {e}")
+            bandit_data = parse_bandit_result(result.stdout, result.returncode)
+            issues = [
+                SecurityIssue(
+                    id=item["test_id"],
+                    title=item.get("test_name", "Security issue"),
+                    description=item.get("issue_text", "No description"),
+                    severity=self._map_bandit_severity(item["issue_severity"]),
+                    category=item.get("test_name", "static_analysis"),
+                    file_path=item.get("filename"),
+                    line_number=item.get("line_number"),
+                    cwe_id=str(item["issue_cwe"]["id"]) if item.get("issue_cwe") else None,
+                    remediation=item.get("more_info"),
+                )
+                for item in bandit_data["results"]
+            ]
 
             return SecurityTestReport(
                 test_id=test_id,
@@ -239,11 +233,8 @@ class StaticAnalyzer:
                 issues=issues,
                 summary={
                     "tool": "bandit",
-                    "files_scanned": (
-                        bandit_data.get("metrics", {}).get("loc", 0)
-                        if "bandit_data" in locals()
-                        else 0
-                    ),
+                    "files_scanned": len(bandit_data["metrics"]) - 1,
+                    "source_lines_scanned": bandit_data["metrics"]["_totals"]["loc"],
                     "issues_found": len(issues),
                 },
             )
