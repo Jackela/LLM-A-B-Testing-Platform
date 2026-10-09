@@ -278,7 +278,6 @@ class InsightService:
                     and float(performance.cost_metrics.cost_per_sample.amount)
                     > thresholds["max_cost_per_sample"]
                 ):
-
                     alert_insights.append(
                         Insight(
                             insight_id=uuid4(),

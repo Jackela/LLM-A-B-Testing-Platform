@@ -84,9 +84,9 @@ class TestStatisticalAnalysisService:
 
         # Setup mocks
         mock_repositories["test_repository"].find_by_id.return_value = sample_test
-        mock_repositories["analytics_repository"].get_evaluation_results.return_value = (
-            sample_evaluation_results
-        )
+        mock_repositories[
+            "analytics_repository"
+        ].get_evaluation_results.return_value = sample_evaluation_results
         mock_repositories["significance_tester"].test_multiple_models.return_value = {
             "model_0_vs_model_1": Mock(
                 test_type="ttest_independent",
@@ -152,9 +152,9 @@ class TestStatisticalAnalysisService:
         model_ids = ["model_0", "model_1"]
 
         # Setup mocks
-        mock_repositories["analytics_repository"].get_evaluation_results.return_value = (
-            sample_evaluation_results
-        )
+        mock_repositories[
+            "analytics_repository"
+        ].get_evaluation_results.return_value = sample_evaluation_results
         mock_repositories["significance_tester"].test_multiple_models.return_value = {
             "model_0_vs_model_1": Mock(
                 test_type="ttest_independent", p_value=Decimal("0.03"), effect_size=Decimal("0.5")
@@ -190,9 +190,9 @@ class TestStatisticalAnalysisService:
         dimensions = ["accuracy", "fluency"]
 
         # Setup mocks
-        mock_repositories["analytics_repository"].get_evaluation_results.return_value = (
-            sample_evaluation_results
-        )
+        mock_repositories[
+            "analytics_repository"
+        ].get_evaluation_results.return_value = sample_evaluation_results
         mock_repositories["significance_tester"].test_dimension_differences.return_value = {
             "accuracy_vs_fluency": Mock(
                 test_type="ttest_paired", p_value=Decimal("0.02"), effect_size=Decimal("0.4")

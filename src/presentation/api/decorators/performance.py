@@ -23,7 +23,7 @@ def generate_cache_key(request: Request, *args, **kwargs) -> str:
         str(sorted(kwargs.items())),
     ]
     key_string = "|".join(key_parts)
-    return hashlib.md5(key_string.encode()).hexdigest()
+    return hashlib.md5(key_string.encode(), usedforsecurity=False).hexdigest()
 
 
 def cached_route(ttl_seconds: int = 300, cache_key_func: Optional[Callable] = None):

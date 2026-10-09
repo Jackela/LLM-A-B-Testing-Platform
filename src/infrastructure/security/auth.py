@@ -189,7 +189,7 @@ class TokenType(str, Enum):
     ACCESS = "access"
     REFRESH = "refresh"
     API_KEY = "api_key"
-    PASSWORD_RESET = "password_reset"
+    PASSWORD_RESET = "password_reset"  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
     EMAIL_VERIFICATION = "email_verification"
 
 
@@ -439,7 +439,7 @@ class EnhancedAuthSystem:
         return {
             "access_token": access_token,
             "refresh_token": refresh_token,
-            "token_type": "bearer",
+            "token_type": "bearer",  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
             "expires_in": self.access_token_expire_minutes * 60,
         }
 
@@ -486,7 +486,7 @@ class EnhancedAuthSystem:
                 session_id=session_id,
             )
 
-        except (jwt.ExpiredSignatureError, jwt.JWTError, ValueError) as e:
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, ValueError) as e:
             logger.warning(f"Token verification failed: {e}")
             return None
 
@@ -516,7 +516,7 @@ class EnhancedAuthSystem:
 
         return {
             "access_token": access_token,
-            "token_type": "bearer",
+            "token_type": "bearer",  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
             "expires_in": self.access_token_expire_minutes * 60,
         }
 

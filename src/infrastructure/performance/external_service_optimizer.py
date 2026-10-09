@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import logging
 import time
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
@@ -448,8 +449,8 @@ class ExternalServiceOptimizer:
                 namespace=f"external_service_{service_name}",
                 layer=CacheLayer.HYBRID,
             )
-        except Exception:
-            pass  # Don't fail request due to cache errors
+        except Exception as error:
+            logging.getLogger(__name__).warning("Optional response cache failed: %s", error)
 
     def _generate_model_request_cache_key(self, data: Dict[str, Any]) -> str:
         """Generate cache key for model requests."""
@@ -464,7 +465,7 @@ class ExternalServiceOptimizer:
         }
 
         key_string = json.dumps(key_data, sort_keys=True)
-        return hashlib.md5(key_string.encode()).hexdigest()
+        return hashlib.md5(key_string.encode(), usedforsecurity=False).hexdigest()
 
     def _generate_analytics_cache_key(self, data: Dict[str, Any]) -> str:
         """Generate cache key for analytics requests."""
@@ -477,14 +478,14 @@ class ExternalServiceOptimizer:
         }
 
         key_string = json.dumps(key_data, sort_keys=True)
-        return hashlib.md5(key_string.encode()).hexdigest()
+        return hashlib.md5(key_string.encode(), usedforsecurity=False).hexdigest()
 
     def _generate_default_cache_key(self, data: Dict[str, Any]) -> str:
         """Generate default cache key."""
         import hashlib
 
         key_string = json.dumps(data, sort_keys=True) if data else "empty"
-        return hashlib.md5(key_string.encode()).hexdigest()
+        return hashlib.md5(key_string.encode(), usedforsecurity=False).hexdigest()
 
     def _record_cache_hit(self, service_name: str, duration_seconds: float) -> None:
         """Record cache hit metrics."""

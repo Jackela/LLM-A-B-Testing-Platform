@@ -128,7 +128,6 @@ class TestDataManager:
     """测试数据管理器"""
 
     def __init__(self, data_dir: Path, cache_size_mb: int = 500, enable_compression: bool = True):
-
         self.data_dir = data_dir
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -286,7 +285,6 @@ class TestEnvironmentManager:
     def __init__(
         self, config: TestEnvironmentConfig, work_dir: Path = Path("tests/performance_workspace")
     ):
-
         self.config = config
         self.work_dir = work_dir
         self.work_dir.mkdir(parents=True, exist_ok=True)
@@ -367,9 +365,7 @@ class TestEnvironmentManager:
         available_memory_mb = memory.available / 1024 / 1024
 
         if available_memory_mb < self.config.memory_limit_mb:
-            logger.error(
-                f"内存不足: 需要{self.config.memory_limit_mb}MB, 可用{available_memory_mb:.0f}MB"
-            )
+            logger.error(f"内存不足: 需要{self.config.memory_limit_mb}MB, 可用{available_memory_mb:.0f}MB")
             return False
 
         # 检查CPU
@@ -382,9 +378,7 @@ class TestEnvironmentManager:
         available_gb = disk.free / 1024 / 1024 / 1024
 
         if available_gb < self.config.disk_space_limit_gb:
-            logger.error(
-                f"磁盘空间不足: 需要{self.config.disk_space_limit_gb}GB, 可用{available_gb:.1f}GB"
-            )
+            logger.error(f"磁盘空间不足: 需要{self.config.disk_space_limit_gb}GB, 可用{available_gb:.1f}GB")
             return False
 
         logger.info("✅ 系统资源检查通过")
@@ -610,7 +604,6 @@ class TestEnvironmentManager:
         """运行性能测试"""
 
         async with self.test_session(test_name) as metrics:
-
             # 准备测试参数
             args = test_args or {}
             args["test_metrics"] = metrics

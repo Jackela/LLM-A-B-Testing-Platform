@@ -129,15 +129,14 @@ def add_performance_middleware(app: FastAPI) -> None:
         async with performance_manager.performance_context(
             operation_name=operation_name, enable_caching=True, enable_circuit_breaker=True
         ) as context:
-
             # Add performance headers
             response = await call_next(request)
 
             # Add performance metrics to response headers
             if context.get("metrics"):
-                response.headers["X-Response-Time"] = (
-                    f"{context['metrics'].get('duration', 0) * 1000:.1f}ms"
-                )
+                response.headers[
+                    "X-Response-Time"
+                ] = f"{context['metrics'].get('duration', 0) * 1000:.1f}ms"
                 response.headers["X-Cache-Status"] = "hit" if context.get("cache_hit") else "miss"
                 response.headers["X-Performance-Optimized"] = "true"
 
@@ -225,7 +224,9 @@ def cached_response(
                     "args": str(args),
                     "kwargs": json.dumps(kwargs, sort_keys=True, default=str),
                 }
-                cache_key = hashlib.md5(json.dumps(key_data, sort_keys=True).encode()).hexdigest()
+                cache_key = hashlib.md5(
+                    json.dumps(key_data, sort_keys=True).encode(), usedforsecurity=False
+                ).hexdigest()
 
             # Try cache first
             cached_result = await performance_manager.cache_manager.get(cache_key, namespace, layer)

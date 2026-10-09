@@ -1,0 +1,42 @@
+{
+  "evidence_kind": "historical_report_only",
+  "raw_results_committed": false,
+  "reported_run": {
+    "dates": [
+      "2025-08-14",
+      "2025-08-15"
+    ],
+    "completed_samples": 2088,
+    "planned_samples": 5197,
+    "completion_percent": 40.2,
+    "outcomes": {
+      "ties": 2005,
+      "anthropic_wins": 73,
+      "openai_wins": 10
+    }
+  },
+  "sources": [
+    {
+      "path": "ARC_EASY_COMPLETE_TEST_REPORT.md",
+      "sha256": "f27a43f5153fc1017d0508a3e6bd372e64f93f3d5e4c6faf9c991bade12f5340"
+    },
+    {
+      "path": "scripts/merge_arc_easy_results.py",
+      "sha256": "5cebd3d6c6fb49e75f95987baba022adafd69529ecd7de6985ba84fe279658f4"
+    }
+  ],
+  "runners": [
+    {
+      "path": "tests/functional/test_real_api_integration.py",
+      "mode": "real_api"
+    },
+    {
+      "path": "tests/functional/test_complete_arc_easy_dataset.py",
+      "mode": "real_api"
+    },
+    {
+      "path": "tests/functional/test_complete_dataset_evaluation.py",
+      "mode": "simulated"
+    }
+  ]
+}

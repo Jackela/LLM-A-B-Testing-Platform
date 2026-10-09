@@ -140,7 +140,7 @@ class StatisticalTest:
             if not values:
                 raise InvalidDataError(f"Group '{group_name}' cannot be empty")
 
-            if not all(isinstance(v, (int, float)) and not math.isnan(v) for v in values):
+            if not all(isinstance(v, (int, float)) and math.isfinite(v) for v in values):
                 raise InvalidDataError(f"Group '{group_name}' contains invalid values")
 
     def _check_sample_size_requirements(self, data: Dict[str, List[float]]) -> None:

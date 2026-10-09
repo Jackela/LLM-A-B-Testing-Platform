@@ -540,7 +540,7 @@ async def request_logging_middleware(request: Request, call_next):
 if __name__ == "__main__":
     # Run with enhanced monitoring
     port = int(os.getenv("PORT", "8000"))
-    host = os.getenv("HOST", "0.0.0.0")
+    host = os.getenv("HOST", "127.0.0.1")
 
     uvicorn.run(
         "main_enhanced:app",

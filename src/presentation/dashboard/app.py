@@ -86,9 +86,7 @@ def main():
 
 def show_login_page():
     """Display login page."""
-    st.markdown(
-        '<div class="main-header">🧪 LLM A/B Testing Platform</div>', unsafe_allow_html=True
-    )
+    st.markdown('<div class="main-header">🧪 LLM A/B Testing Platform</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
 

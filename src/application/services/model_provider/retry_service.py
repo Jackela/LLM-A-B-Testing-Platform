@@ -305,7 +305,9 @@ class RetryService:
         # Apply jitter if enabled
         if config.jitter:
             jitter_range = exponential_delay * config.jitter_factor
-            jitter = random.uniform(-jitter_range, jitter_range)
+            jitter = random.uniform(
+                -jitter_range, jitter_range
+            )  # nosec B311 # Retry scheduling jitter; never used for credentials or cryptography.
             delay = exponential_delay + jitter
         else:
             delay = exponential_delay

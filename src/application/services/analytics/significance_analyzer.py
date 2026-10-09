@@ -459,7 +459,9 @@ class SignificanceAnalyzer:
                 "interpretation": (
                     "high"
                     if direction_consistency > 0.8
-                    else "medium" if direction_consistency > 0.6 else "low"
+                    else "medium"
+                    if direction_consistency > 0.6
+                    else "low"
                 ),
             }
 

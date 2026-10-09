@@ -199,10 +199,11 @@ type-check: ## Run comprehensive type checking
 security-scan: ## Run security scanning
 	@echo "Running security scans..."
 	@echo "Running bandit security scan..."
-	poetry run bandit -r src/ -f json -o bandit-report.json || true
-	@echo "Running safety dependency scan..."
-	poetry run safety check --json --output safety-report.json || true
-	@echo "Security scan reports generated: bandit-report.json, safety-report.json"
+	poetry run bandit -r src/ -f json -o bandit-report.json
+	@echo "Auditing locked runtime dependencies..."
+	python tools/export_locked_requirements.py > requirements-audit.txt
+	poetry run python -m pip_audit --disable-pip --no-deps -r requirements-audit.txt --format json --output dependency-report.json
+	@echo "Security scan reports generated: bandit-report.json, dependency-report.json"
 
 code-quality: ## Run code quality analysis
 	@echo "Running code quality analysis..."

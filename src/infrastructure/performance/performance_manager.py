@@ -397,9 +397,9 @@ class PerformanceManager:
 
         # Circuit breaker statistics
         if self.circuit_breaker_manager:
-            dashboard["circuit_breakers"] = (
-                self.circuit_breaker_manager.get_circuit_breaker_status()
-            )
+            dashboard[
+                "circuit_breakers"
+            ] = self.circuit_breaker_manager.get_circuit_breaker_status()
 
         # API optimization statistics
         if self.api_optimizer:

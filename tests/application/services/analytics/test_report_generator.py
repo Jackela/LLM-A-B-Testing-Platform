@@ -125,15 +125,15 @@ class TestReportGenerator:
 
         # Setup mocks
         mock_repositories["test_repository"].find_by_id.return_value = sample_test
-        mock_repositories["visualization_service"].create_summary_dashboard.return_value = (
-            "<div>Chart</div>"
-        )
-        mock_repositories["visualization_service"].create_model_comparison_chart.return_value = (
-            "<div>Chart</div>"
-        )
-        mock_repositories["visualization_service"].create_statistical_results_chart.return_value = (
-            "<div>Chart</div>"
-        )
+        mock_repositories[
+            "visualization_service"
+        ].create_summary_dashboard.return_value = "<div>Chart</div>"
+        mock_repositories[
+            "visualization_service"
+        ].create_model_comparison_chart.return_value = "<div>Chart</div>"
+        mock_repositories[
+            "visualization_service"
+        ].create_statistical_results_chart.return_value = "<div>Chart</div>"
 
         # Execute
         result = await generator.generate_report(test_id, sample_analysis_result, report_config)
@@ -174,9 +174,9 @@ class TestReportGenerator:
 
         # Setup mocks
         mock_repositories["test_repository"].find_by_id.return_value = sample_test
-        mock_repositories["visualization_service"].create_summary_dashboard.return_value = (
-            "<div>Chart</div>"
-        )
+        mock_repositories[
+            "visualization_service"
+        ].create_summary_dashboard.return_value = "<div>Chart</div>"
 
         # Execute
         result = await generator.generate_executive_summary(test_id, sample_analysis_result)
@@ -198,12 +198,12 @@ class TestReportGenerator:
 
         # Setup mocks
         mock_repositories["test_repository"].find_by_id.return_value = sample_test
-        mock_repositories["visualization_service"].create_summary_dashboard.return_value = (
-            "<div>Chart</div>"
-        )
-        mock_repositories["visualization_service"].create_model_comparison_chart.return_value = (
-            "<div>Chart</div>"
-        )
+        mock_repositories[
+            "visualization_service"
+        ].create_summary_dashboard.return_value = "<div>Chart</div>"
+        mock_repositories[
+            "visualization_service"
+        ].create_model_comparison_chart.return_value = "<div>Chart</div>"
 
         # Execute
         result = await generator.generate_detailed_analysis(test_id, sample_analysis_result)
@@ -224,9 +224,9 @@ class TestReportGenerator:
 
         # Setup mocks
         mock_repositories["test_repository"].find_by_id.return_value = sample_test
-        mock_repositories["visualization_service"].create_model_comparison_chart.return_value = (
-            "<div>Chart</div>"
-        )
+        mock_repositories[
+            "visualization_service"
+        ].create_model_comparison_chart.return_value = "<div>Chart</div>"
 
         # Execute
         result = await generator.generate_model_comparison(

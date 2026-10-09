@@ -174,7 +174,7 @@ class SecurityInputValidator:
             "name": 100,
             "email": 254,
             "url": 2000,
-            "password": 128,
+            "password": 128,  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
             "username": 50,
             "json": 100000,
         }

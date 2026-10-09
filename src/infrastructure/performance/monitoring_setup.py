@@ -327,7 +327,6 @@ class PerformanceMonitor:
                     ] >= rule.min_occurrences and self._should_trigger_alert(
                         rule, rule_state, current_time
                     ):
-
                         await self._trigger_alert(rule, metric_value, current_time)
                         rule_state["last_alert_time"] = current_time
                 else:
@@ -454,7 +453,6 @@ class PerformanceMonitor:
         """Resolve active alerts for a rule."""
         for alert in self.active_alerts:
             if alert.rule.name == rule.name and alert.status == AlertStatus.ACTIVE:
-
                 alert.status = AlertStatus.RESOLVED
                 alert.resolution_timestamp = timestamp
 

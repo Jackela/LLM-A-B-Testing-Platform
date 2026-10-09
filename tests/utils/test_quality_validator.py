@@ -80,7 +80,9 @@ class TestQualityValidator:
             "status": (
                 "excellent"
                 if coverage_ratio > 0.8
-                else "good" if coverage_ratio > 0.6 else "needs_improvement"
+                else "good"
+                if coverage_ratio > 0.6
+                else "needs_improvement"
             ),
             "coverage_ratio": coverage_ratio,
             "unit_test_files": len(unit_tests),
@@ -123,7 +125,9 @@ class TestQualityValidator:
             "status": (
                 "excellent"
                 if len(functional_tests) > 10
-                else "good" if len(functional_tests) > 5 else "needs_improvement"
+                else "good"
+                if len(functional_tests) > 5
+                else "needs_improvement"
             ),
             "test_files": len(functional_tests),
             "recommendations": self._generate_functional_test_recommendations(
@@ -243,7 +247,9 @@ class TestQualityValidator:
             "status": (
                 "excellent"
                 if naming_ratio > 0.8
-                else "good" if naming_ratio > 0.6 else "needs_improvement"
+                else "good"
+                if naming_ratio > 0.6
+                else "needs_improvement"
             ),
             "naming_ratio": naming_ratio,
             "good_names": good_names,
@@ -285,7 +291,9 @@ class TestQualityValidator:
             "status": (
                 "excellent"
                 if len(fixture_files) > 10
-                else "good" if len(fixture_files) > 5 else "needs_improvement"
+                else "good"
+                if len(fixture_files) > 5
+                else "needs_improvement"
             ),
             "fixture_files": len(fixture_files),
             "recommendations": self._generate_fixture_recommendations(len(fixture_files)),
@@ -322,7 +330,9 @@ class TestQualityValidator:
             "status": (
                 "excellent"
                 if specificity_ratio > 0.7
-                else "good" if specificity_ratio > 0.5 else "needs_improvement"
+                else "good"
+                if specificity_ratio > 0.5
+                else "needs_improvement"
             ),
             "specificity_ratio": specificity_ratio,
             "specific_assertions": assertion_quality["specific"],
@@ -355,7 +365,9 @@ class TestQualityValidator:
             "status": (
                 "excellent"
                 if documentation_ratio > 0.8
-                else "good" if documentation_ratio > 0.6 else "needs_improvement"
+                else "good"
+                if documentation_ratio > 0.6
+                else "needs_improvement"
             ),
             "documentation_ratio": documentation_ratio,
             "documented_tests": documented_tests,
@@ -556,7 +568,9 @@ class TestQualityValidator:
             (
                 1.0
                 if analysis.get("status") == "excellent"
-                else 0.7 if analysis.get("status") == "good" else 0.3
+                else 0.7
+                if analysis.get("status") == "good"
+                else 0.3
             )
             for analysis in coverage_analysis.values()
         ]
@@ -565,7 +579,9 @@ class TestQualityValidator:
             (
                 1.0
                 if analysis.get("status") == "excellent"
-                else 0.7 if analysis.get("status") == "good" else 0.3
+                else 0.7
+                if analysis.get("status") == "good"
+                else 0.3
             )
             for analysis in design_quality.values()
         ]

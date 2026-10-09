@@ -63,7 +63,6 @@ class PerformanceTestOptimizer:
         max_concurrent_tasks: int = 50,
         batch_size: int = 10,
     ):
-
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 

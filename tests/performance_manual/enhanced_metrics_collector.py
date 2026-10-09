@@ -104,7 +104,6 @@ class EnhancedMetricsCollector:
         max_snapshots: int = 10000,
         baseline_file: Optional[Path] = None,
     ):
-
         self.collection_interval = collection_interval
         self.max_snapshots = max_snapshots
         self.baseline_file = baseline_file or Path("performance_baselines.json")
@@ -869,9 +868,7 @@ async def example_enhanced_metrics():
 
     # 设置告警回调
     def alert_handler(alert):
-        logger.warning(
-            f"🚨 性能告警: {alert['type']} = {alert['value']:.2f} (阈值: {alert['threshold']})"
-        )
+        logger.warning(f"🚨 性能告警: {alert['type']} = {alert['value']:.2f} (阈值: {alert['threshold']})")
 
     def real_time_handler(metrics):
         logger.info(
@@ -936,15 +933,11 @@ async def example_enhanced_metrics():
 
         # 显示关键指标
         req_stats = report["request_statistics"]
-        logger.info(
-            f"📈 请求统计: 总计{req_stats['total_requests']} 成功率{req_stats['success_rate']:.1%}"
-        )
+        logger.info(f"📈 请求统计: 总计{req_stats['total_requests']} 成功率{req_stats['success_rate']:.1%}")
 
         if "response_time_analysis" in report:
             rt_stats = report["response_time_analysis"]
-            logger.info(
-                f"⏱️ 响应时间: 平均{rt_stats['average_ms']:.1f}ms P95{rt_stats['p95_ms']:.1f}ms"
-            )
+            logger.info(f"⏱️ 响应时间: 平均{rt_stats['average_ms']:.1f}ms P95{rt_stats['p95_ms']:.1f}ms")
 
         # 显示建议
         logger.info("💡 性能优化建议:")

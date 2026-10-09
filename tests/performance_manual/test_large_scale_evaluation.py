@@ -531,12 +531,8 @@ class LargeScaleTestRunner:
         """运行大规模测试"""
         logger.info("🚀 开始大规模LLM as a Judge测试")
         logger.info(f"📊 目标样本数: {sample_count}")
-        logger.info(
-            f"🤖 Provider A: {self.provider_a.provider_name} ({self.provider_a.model_name})"
-        )
-        logger.info(
-            f"🤖 Provider B: {self.provider_b.provider_name} ({self.provider_b.model_name})"
-        )
+        logger.info(f"🤖 Provider A: {self.provider_a.provider_name} ({self.provider_a.model_name})")
+        logger.info(f"🤖 Provider B: {self.provider_b.provider_name} ({self.provider_b.model_name})")
         logger.info("=" * 80)
 
         # 加载测试数据
@@ -792,9 +788,7 @@ class LargeScaleTestRunner:
         else:
             logger.info(f"  ⚖️ 两个模型表现相近")
 
-        logger.info(
-            f"  💡 总成本控制良好: ${cost['total_cost']} (平均每样本 ${cost['avg_cost_per_sample']})"
-        )
+        logger.info(f"  💡 总成本控制良好: ${cost['total_cost']} (平均每样本 ${cost['avg_cost_per_sample']})")
 
 
 async def main():

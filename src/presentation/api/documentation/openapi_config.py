@@ -222,13 +222,16 @@ def get_api_examples() -> Dict[str, Any]:
         "authentication": {
             "login_request": {
                 "summary": "User login example",
-                "value": {"username": "user@example.com", "password": "SecurePassword123!"},
+                "value": {
+                    "username": "user@example.com",
+                    "password": "SecurePassword123!",
+                },  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
             },
             "login_response": {
                 "summary": "Successful login response",
                 "value": {
-                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                    "token_type": "bearer",
+                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
+                    "token_type": "bearer",  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
                     "expires_in": 86400,
                     "user": {"id": "user-123", "username": "user@example.com", "role": "USER"},
                 },

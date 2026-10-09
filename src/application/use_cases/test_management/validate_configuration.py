@@ -309,7 +309,9 @@ class ValidateConfigurationUseCase:
         p2 = p1 + effect_size
         p_pooled = (p1 + p2) / 2
 
-        sample_per_group = ((z_alpha + z_beta) ** 2 * p_pooled * (1 - p_pooled)) / (effect_size**2)
+        sample_per_group = ((z_alpha + z_beta) ** 2 * p_pooled * (1 - p_pooled)) / (
+            effect_size**2
+        )
         min_total_samples = int(sample_per_group * model_count)
 
         analysis = {

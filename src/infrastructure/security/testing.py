@@ -6,7 +6,8 @@ import asyncio
 import json
 import logging
 import os
-import subprocess
+import subprocess  # nosec B404 # Fixed local scanner commands; no shell or externally supplied program.
+import sys
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
@@ -16,6 +17,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import httpx
 
 from ..monitoring.structured_logging import get_logger
+from .dependency_audit import audit_locked_runtime
 from .middleware import InputValidator, SecurityMiddleware
 
 logger = get_logger(__name__)
@@ -116,40 +118,30 @@ class DependencyChecker:
         self.project_root = project_root
 
     async def run_safety_check(self) -> SecurityTestReport:
-        """Run safety check on dependencies."""
+        """Compatibility entry point auditing locked dependencies with pip-audit."""
         test_id = f"safety_check_{int(time.time())}"
         started_at = datetime.utcnow()
 
         try:
-            # Run safety check
-            result = subprocess.run(
-                ["safety", "check", "--json", "--full-report"],
-                cwd=self.project_root,
-                capture_output=True,
-                text=True,
-                timeout=300,
-            )
-
+            vulnerabilities = await asyncio.to_thread(audit_locked_runtime, self.project_root)
             completed_at = datetime.utcnow()
             duration = (completed_at - started_at).total_seconds()
-
-            issues = []
-            if result.returncode != 0 and result.stdout:
-                try:
-                    safety_data = json.loads(result.stdout)
-                    for vuln in safety_data:
-                        issue = SecurityIssue(
-                            id=vuln.get("id", "unknown"),
-                            title=f"Vulnerable dependency: {vuln.get('package_name', 'unknown')}",
-                            description=vuln.get("advisory", "No description available"),
-                            severity=self._map_safety_severity(vuln.get("severity", "medium")),
-                            category="dependency_vulnerability",
-                            cve_id=vuln.get("cve"),
-                            remediation=f"Upgrade to version {vuln.get('safe_version', 'latest')} or higher",
-                        )
-                        issues.append(issue)
-                except json.JSONDecodeError:
-                    pass
+            issues = [
+                SecurityIssue(
+                    id=vulnerability["id"],
+                    title=f"Vulnerable dependency: {vulnerability['package_name']}",
+                    description=vulnerability.get("description", "No description available"),
+                    severity=SeverityLevel.MEDIUM,
+                    category="dependency_vulnerability",
+                    remediation=(
+                        "Upgrade to a fixed version: "
+                        + ", ".join(vulnerability.get("fix_versions", []))
+                        if vulnerability.get("fix_versions")
+                        else "No fixed version reported"
+                    ),
+                )
+                for vulnerability in vulnerabilities
+            ]
 
             return SecurityTestReport(
                 test_id=test_id,
@@ -160,7 +152,7 @@ class DependencyChecker:
                 duration_seconds=duration,
                 issues=issues,
                 summary={
-                    "tool": "safety",
+                    "tool": "pip-audit",
                     "packages_scanned": "all",
                     "vulnerabilities_found": len(issues),
                 },
@@ -175,11 +167,11 @@ class DependencyChecker:
                 started_at=started_at,
                 completed_at=completed_at,
                 duration_seconds=(completed_at - started_at).total_seconds(),
-                summary={"error": "Safety check timed out"},
+                summary={"error": "Dependency audit timed out"},
             )
         except Exception as e:
             completed_at = datetime.utcnow()
-            logger.error(f"Safety check failed: {e}")
+            logger.error(f"Dependency audit failed: {e}")
             return SecurityTestReport(
                 test_id=test_id,
                 test_type=SecurityTestType.DEPENDENCY_CHECK,
@@ -189,16 +181,6 @@ class DependencyChecker:
                 duration_seconds=(completed_at - started_at).total_seconds(),
                 summary={"error": str(e)},
             )
-
-    def _map_safety_severity(self, safety_severity: str) -> SeverityLevel:
-        """Map safety severity to our severity levels."""
-        mapping = {
-            "critical": SeverityLevel.CRITICAL,
-            "high": SeverityLevel.HIGH,
-            "medium": SeverityLevel.MEDIUM,
-            "low": SeverityLevel.LOW,
-        }
-        return mapping.get(safety_severity.lower(), SeverityLevel.MEDIUM)
 
 
 class StaticAnalyzer:
@@ -214,8 +196,8 @@ class StaticAnalyzer:
 
         try:
             # Run bandit analysis
-            result = subprocess.run(
-                ["bandit", "-r", "src/", "-f", "json"],
+            result = subprocess.run(  # nosec B603 # Fixed local scanner argv; no shell or externally supplied program.
+                [sys.executable, "-m", "bandit", "-r", "src/", "-f", "json"],
                 cwd=self.project_root,
                 capture_output=True,
                 text=True,
@@ -458,7 +440,11 @@ class APISecurityTester:
             for i in range(100):  # Try to exceed rate limit
                 try:
                     response = await client.post(
-                        login_url, json={"username": "test", "password": "invalid"}
+                        login_url,
+                        json={
+                            "username": "test",
+                            "password": "invalid",
+                        },  # nosec B105 # Not a credential: an enum, protocol label, size limit or documented example.
                     )
                     requests_sent += 1
 
@@ -613,8 +599,10 @@ class ComplianceChecker:
                                             remediation="Use environment variables or secure secret management",
                                         )
                                     )
-                    except Exception:
-                        continue
+                    except Exception as error:
+                        logging.getLogger(__name__).warning(
+                            "Unable to inspect source file %s: %s", file_path, error
+                        )
 
         return issues
 

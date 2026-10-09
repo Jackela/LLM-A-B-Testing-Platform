@@ -253,8 +253,10 @@ class TestCompleteWorkflow:
     ):
         """Test workflow handling of validation failures."""
         # Arrange
-        mock_dependencies["validation_service"].validate_test_creation.return_value = (
-            ValidationResult(False, ["Insufficient samples for statistical significance"])
+        mock_dependencies[
+            "validation_service"
+        ].validate_test_creation.return_value = ValidationResult(
+            False, ["Insufficient samples for statistical significance"]
         )
 
         # Act
@@ -318,7 +320,6 @@ class TestCompleteWorkflow:
             "execute",
             return_value=mock_processing_result,
         ):
-
             # Act
             processing_result = await orchestration_service.process_samples_use_case.execute(
                 test_id
